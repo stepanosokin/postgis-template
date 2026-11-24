@@ -1,0 +1,18 @@
+services:
+  db:
+    build: ./docker
+    env_file:
+      - path: ./.secrets/.postgres
+        format: raw
+    environment:
+      POSTGRES_DB: geodata
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres:/var/lib/postgresql
+    shm_size: 128mb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U \"$$POSTGRES_USER\" -d geodata"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
